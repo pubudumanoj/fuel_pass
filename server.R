@@ -41,7 +41,7 @@ shinyServer(function(input, output, session) {
 
       need(input$telephone != '', 'Please Insert you Contact Number'),
       need((!is.na(as.numeric(input$telephone))), 'Contact Number should only be numbers'),
-      need(nchar(input$telephone)==10, "Contact number should be 10 numbers"),
+      need(nchar(input$telephone)==10, "Contact number should be 10 digits"),
       need(input$qr != '', 'Please Insert your QR code.')
      
     )

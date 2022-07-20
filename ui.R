@@ -32,7 +32,7 @@ shinyUI(fluidPage(
                    choiceValues = list(
                      "Petrol", "Diesel"
                    )),
-      actionButton(inputId = "createimage", label = "Create my ID"),
+      actionButton(inputId = "createimage", label = "Create your ID"),
       br(), br(),
       
       downloadButton('downloadImage', 'Download your ID card')
