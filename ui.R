@@ -12,6 +12,7 @@ library(dplyr)
 library(quadrangle)
 library(magick)
 
+
 # Define UI for input fielads and image
 shinyUI(fluidPage(
   

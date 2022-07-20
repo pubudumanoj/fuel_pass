@@ -15,7 +15,10 @@ library(quadrangle)
 #for image manipulation
 library(magick)
 
+
 shinyServer(function(input, output, session) {
+  
+  
   
   #create a reactive object from QR code in order to use later
   image.data <- reactive({
@@ -27,16 +30,29 @@ shinyServer(function(input, output, session) {
     return(img)
   })
   
+  
 #main logic of the app
   add_overlay <- function(){
     
+  
+    validate(
+      
+      need(input$name != '', 'Please Insert you Name.'),
+
+      need(input$telephone != '', 'Please Insert you Contact Number'),
+      need((!is.na(as.numeric(input$telephone))), 'Contact Number should only be numbers'),
+      need(nchar(input$telephone)==10, "Contact number should be 10 numbers"),
+      need(input$qr != '', 'Please Insert your QR code.')
+     
+    )
+   
+   
     #load the QR code and resize
-    qr <-  image_read(image.data()) %>% 
-      image_resize(c(900,900))
+    qr <-  image_read(image.data())
+    qr2 <- image_trim(qr, fuzz = 0) %>% image_resize(c(700,700))
+  
     
-    qr2 <- qr
-    
-    #load the template
+        #load the template
     img2<-image_read("www/fuel_pass_temp1.png")
     
     #scan the QR code and get the registation number
@@ -54,8 +70,10 @@ shinyServer(function(input, output, session) {
     img2 <- image_annotate(img2, as.character(input$rb), size = 100, color = "black",
                            location = "+1690+895")
     #align the QR code with the image
-    img3 <- image_composite(img2, qr2, offset = "+100+610")
+    img3 <- image_composite(img2, qr2, offset = "+200+610")
+    
     return(img3)
+    
   }
   
   
