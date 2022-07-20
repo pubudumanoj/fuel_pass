@@ -12,7 +12,7 @@ library(dplyr)
 library(quadrangle)
 library(magick)
 
-# Define UI for application that draws a histogram
+# Define UI for input fielads and image
 shinyUI(fluidPage(
   
   # Application title
@@ -43,8 +43,7 @@ shinyUI(fluidPage(
     mainPanel(
       
       
-      imageOutput("image2"),
-      imageOutput("image3")
+      imageOutput("image2")
       
     )
   )

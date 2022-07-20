@@ -7,13 +7,17 @@
 #    http://shiny.rstudio.com/
 #
 
+#loading libraries
 library(shiny)
 library(dplyr)
+#library for QR code scan
 library(quadrangle)
+#for image manipulation
 library(magick)
 
 shinyServer(function(input, output, session) {
   
+  #create a reactive object from QR code in order to use later
   image.data <- reactive({
     inImage <- input$qr
     
@@ -23,37 +27,22 @@ shinyServer(function(input, output, session) {
     return(img)
   })
   
-  output$image2 <- renderImage({
-    
-    if(is.null(input$image)){
-      return(list(src=""))
-    }
-    else {
-
-      return(list(
-        src = "fuel_pass_temp1.png",
-        contentType = "image/png",
-        alt = "wedding_card", width = "100%"
-        
-      )
-      )
-
-    }
-    
-  }, deleteFile = FALSE)
-  
-  
+#main logic of the app
   add_overlay <- function(){
     
-    
+    #load the QR code and resize
     qr <-  image_read(image.data()) %>% 
       image_resize(c(900,900))
     
     qr2 <- qr
     
+    #load the template
     img2<-image_read("www/fuel_pass_temp1.png")
     
+    #scan the QR code and get the registation number
     regno <- qr_scan(image.data())$values$value %>% strsplit(" ") %>% unlist()
+    
+    #add and align user inputs on the image (add text overlay)
     img2 <- image_annotate(img2, as.character(input$name), size = 100, color = "black",
                            location = "+1460+623")
     img2 <- image_annotate(img2, regno[1], size = 100, color = "black",
@@ -64,7 +53,7 @@ shinyServer(function(input, output, session) {
     
     img2 <- image_annotate(img2, as.character(input$rb), size = 100, color = "black",
                            location = "+1690+895")
-    
+    #align the QR code with the image
     img3 <- image_composite(img2, qr2, offset = "+100+610")
     return(img3)
   }
@@ -76,10 +65,6 @@ shinyServer(function(input, output, session) {
    
     image_write(add_overlay(), temp_file)
     temp_file
-    #}
-    
-
-    
     
   })
   
@@ -89,11 +74,7 @@ shinyServer(function(input, output, session) {
     output$image2 <-renderImage({
       
       temp_file <- updated_img()
-      
-      
-      
-      ####
-      
+
       list(src = temp_file,
            width = "100%",
            
@@ -114,9 +95,7 @@ shinyServer(function(input, output, session) {
     }
   )
   
-
-
-  
+  #eventually the server deletes all the temporary images once the user session is finished
   
   
 })
